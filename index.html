@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Duostudy Asistente</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            duogreen: '#58CC02',
+            duodark: '#3A9A00',
+            duoyellow: '#FFD700'
+          },
+          fontFamily: {
+            sans: ['"Baloo 2"', 'cursive']
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 1s ease-out;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="bg-green-50 font-sans text-gray-800">
+
+  <!-- Hero -->
+  <section class="min-h-screen flex items-center justify-center bg-duogreen text-white text-center px-6">
+    <div class="max-w-3xl fade-in">
+      <h1 class="text-5xl font-bold mb-4">¡Bienvenido a DuoStudy!</h1>
+      <p class="text-xl mb-6">
+        Convierte tus apuntes en cuestionarios tipo test al estilo Duolingo.
+      </p>
+      <a href="https://chatgpt.com/g/g-67fcf0b46e488191b96adc73e9cb223c-duostudy-builder" class="bg-white text-duogreen font-semibold py-3 px-6 rounded-xl text-lg transition hover:bg-duoyellow hover:text-black transform hover:scale-105 inline-block">
+        Ir al Chat
+      </a>
+    </div>
+  </section>
+
+  <!-- ¿Qué es? -->
+  <section class="py-16 px-6 bg-white text-center fade-in">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl text-duogreen font-bold mb-4">¿Qué hace el asistente?</h2>
+      <p class="text-lg mb-6">
+        Esta herramienta analiza tus apuntes y crea automáticamente preguntas tipo test listas para cargar en la plataforma Duostudy.
+      </p>
+      <a href="https://chatgpt.com/g/g-67fcf0b46e488191b96adc73e9cb223c-duostudy-builder" class="bg-duogreen text-white font-semibold py-2 px-5 rounded-lg shadow-md transition hover:bg-duodark transform hover:scale-105">
+        Probar ahora
+      </a>
+    </div>
+  </section>
+
+  <!-- Cómo funciona -->
+  <section class="py-20 bg-green-100 px-6 text-center fade-in">
+    <h2 class="text-3xl text-duogreen font-bold mb-10">¿Cómo funciona?</h2>
+    <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-xl font-semibold text-duogreen mb-2">1. Ve al chat y sube tus apuntes</h3>
+        <p class="text-gray-700">Aceptamos los apuntes en todos los formatos.</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-xl font-semibold text-duogreen mb-2">2. El asistente crea el test</h3>
+        <p class="text-gray-700">Las preguntas se generan automáticamente con opciones aleatorias adaptadas a lo que le pidas.</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-xl font-semibold text-duogreen mb-2">3. Descarga el test y practica</h3>
+        <p class="text-gray-700">Descarga el archivo JSON y súbelo a la plataforma</p>
+      </div>
+    </div>
+    <div class="mt-10">
+      <a href="https://chatgpt.com/g/g-67fcf0b46e488191b96adc73e9cb223c-duostudy-builder" class="bg-duogreen text-white py-3 px-8 rounded-xl text-lg font-semibold transition hover:bg-duodark transform hover:scale-105">
+        Empezar ahora
+      </a>
+    </div>
+  </section>
+
+  <!-- Beneficios -->
+  <section class="py-20 bg-white text-center fade-in">
+    <h2 class="text-3xl font-bold text-duogreen mb-6">Beneficios para ti</h2>
+    <ul class="grid sm:grid-cols-2 gap-4 max-w-4xl mx-auto text-left text-gray-700 text-lg">
+      <li>✅ Ahorra tiempo creando tests</li>
+      <li>✅ Mejora la retención con quizzes dinámicos</li>
+      <li>✅ Ideal para estudiar, repasar o enseñar</li>
+      <li>✅ Compatible con móviles, iPads y ordenador</li>
+    </ul>
+    <div class="mt-8">
+      <a href="https://chatgpt.com/g/g-67fcf0b46e488191b96adc73e9cb223c-duostudy-builder" class="bg-duoyellow text-black font-bold py-3 px-6 rounded-lg transition hover:bg-yellow-400 transform hover:scale-105">
+        Ir al generador de preguntas
+      </a>
+    </div>
+  </section>
+
+  <!-- CTA Final -->
+  <section class="py-20 bg-duogreen text-white text-center px-6 fade-in">
+    <h2 class="text-4xl font-bold mb-4">¿Estás listo para estudiar como nunca antes?</h2>
+    <p class="text-lg mb-6">Entra al asistente y convierte tus apuntes en práctica real.</p>
+    <a href="https://chatgpt.com/g/g-67fcf0b46e488191b96adc73e9cb223c-duostudy-builder" class="bg-white text-duogreen font-semibold py-4 px-8 rounded-xl text-lg transition hover:bg-duoyellow hover:text-black transform hover:scale-105 inline-block">
+      Comenzar ahora
+    </a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-duodark text-white text-center py-6 mt-12">
+    <p>© 2025 Duostudy · Martín Gómez-Acebo Baldrich · Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    const fadeInEls = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    fadeInEls.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
