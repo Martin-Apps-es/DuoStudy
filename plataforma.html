@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duostudy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            verde: '#5D9E2E',
+            azul: '#39A6A3',
+            rojo: '#E24E42',
+            amarillo: '#F1D139',
+            fondo: '#F9FAFB',
+            texto: '#333333',
+          },
+          animation: {
+            fadeIn: 'fadeIn 0.5s ease-in',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: 0 },
+              '100%': { opacity: 1 },
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    #fileInput {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: transparent;
+      margin: 0 auto;
+      text-align: center;
+    }
+    #fileInput::-webkit-file-upload-button {
+      visibility: hidden;
+    }
+    #fileInput::before {
+      content: 'Subir archivo';
+      display: inline-block;
+      background: #39A6A3;
+      color: white;
+      border-radius: 9999px;
+      padding: 0.5rem 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-align: center;
+    }
+    #fileInput:hover::before {
+      background: #2f8781;
+    }
+  </style>
+</head>
+<body class="bg-fondo min-h-screen flex flex-col items-center justify-center p-4 text-texto">
+  <!-- Contenedor principal -->
+  <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center animate-fadeIn">
+    <h1 class="text-3xl font-bold text-verde mb-6 tracking-tight">DuoStudy</h1>
+
+    <!-- Selector de archivo correctamente centrado -->
+    <div class="flex justify-center mb-6">
+      <label for="fileInput" class="text-center w-full">
+        <input type="file" accept=".json" id="fileInput" />
+      </label>
+    </div>
+
+
+
+    <!-- Sección del test -->
+    <div id="quizContainer" class="hidden">
+      <div id="question" class="text-lg font-semibold mb-6 text-center"></div>
+      <div id="options" class="grid gap-3 mb-6"></div>
+      <button id="nextButton" onclick="nextQuestion()" class="hidden bg-azul hover:bg-opacity-90 text-white px-6 py-2 rounded-full font-semibold transition">Continuar</button>
+      <div class="mt-4 text-sm">✅ <span id="correct">0</span> | ❌ <span id="wrong">0</span></div>
+      <div class="mt-6 flex justify-center gap-6">
+        <button onclick="resetTest()" class="text-verde font-semibold hover:underline">Reiniciar</button>
+        <button onclick="endTest()" class="text-rojo font-semibold hover:underline">Terminar</button>
+      </div>
+    </div>
+
+    <!-- Mensaje final -->
+    <div id="endMessage" class="hidden text-xl text-verde font-bold mt-6">¡Test finalizado!</div>
+  </div>
+
+  <!-- Popup resultado final -->
+  <div id="popup" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-lg p-6 w-80 text-center animate-fadeIn">
+      <h2 class="text-xl font-bold text-verde mb-2">Resultado Final</h2>
+      <p class="mb-1">✅ Aciertos: <span id="popupCorrect"></span></p>
+      <p class="mb-1">❌ Errores: <span id="popupWrong"></span></p>
+      <p class="font-semibold">🌟 Porcentaje: <span id="popupPercent"></span>%</p>
+      <div class="mt-6 flex justify-center gap-4">
+        <button onclick="resetTest()" class="bg-verde hover:bg-opacity-90 text-white px-4 py-2 rounded-full font-semibold">Reiniciar</button>
+        <button onclick="closePopup()" class="bg-rojo hover:bg-opacity-90 text-white px-4 py-2 rounded-full font-semibold">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup de error -->
+  <div id="errorPopup" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white border-2 border-rojo rounded-xl shadow-lg p-6 w-80 text-center animate-fadeIn">
+      <h2 class="text-xl font-bold text-rojo mb-2">❌ ¡Incorrecto!</h2>
+      <p class="text-texto">La respuesta correcta era:</p>
+      <p id="correctAnswerText" class="font-semibold text-rojo mt-2"></p>
+      <button onclick="closeErrorPopup()" class="mt-4 bg-rojo hover:bg-opacity-90 text-white px-4 py-2 rounded-full font-semibold">Entendido</button>
+    </div>
+  </div>
+
+  <!-- Audios -->
+  <audio id="soundCorrect" src="acierto.mp3"></audio>
+  <audio id="soundWrong" src="fallo.mp3"></audio>
+
+  <!-- Scripts funcionales conservados sin modificar -->
+  <script>
+    let questions = [];
+    let current = 0;
+    let correct = 0;
+    let wrong = 0;
+    let fileContent = "";
+    let answered = false;
+
+    const soundCorrect = document.getElementById("soundCorrect");
+    const soundWrong = document.getElementById("soundWrong");
+
+    document.getElementById("fileInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        fileContent = event.target.result;
+        questions = JSON.parse(fileContent);
+        startTest();
+      };
+      reader.readAsText(file);
+    });
+
+    function startTest() {
+      current = 0;
+      correct = 0;
+      wrong = 0;
+      answered = false;
+      document.getElementById("correct").textContent = correct;
+      document.getElementById("wrong").textContent = wrong;
+      document.getElementById("quizContainer").classList.remove("hidden");
+      document.getElementById("endMessage").classList.add("hidden");
+      document.getElementById("popup").classList.add("hidden");
+      showQuestion();
+    }
+
+    function resetTest() {
+      questions = JSON.parse(fileContent);
+      startTest();
+    }
+
+    function endTest() {
+      current = questions.length;
+      document.getElementById("quizContainer").classList.add("hidden");
+      document.getElementById("endMessage").classList.remove("hidden");
+      showPopup();
+    }
+
+    function showQuestion() {
+      answered = false;
+      document.getElementById("nextButton").classList.add("hidden");
+      if (current >= questions.length) {
+        document.getElementById("quizContainer").classList.add("hidden");
+        document.getElementById("endMessage").classList.remove("hidden");
+        showPopup();
+        return;
+      }
+      const q = questions[current];
+      document.getElementById("question").textContent = q.pregunta;
+      const optionsContainer = document.getElementById("options");
+      optionsContainer.innerHTML = "";
+      q.opciones.forEach((opt, index) => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.className = "border border-azul rounded-full px-4 py-2 font-medium hover:bg-azul hover:text-white transition";
+        btn.onclick = () => checkAnswer(index, btn);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(index, button) {
+      if (answered) return;
+      answered = true;
+      const correctIndex = questions[current].respuesta;
+      const correctText = questions[current].opciones[correctIndex];
+      const buttons = document.querySelectorAll("#options button");
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === correctIndex) {
+          btn.classList.add("bg-verde", "text-white");
+        } else if (i === index) {
+          btn.classList.add("bg-rojo", "text-white");
+        }
+      });
+      if (index === correctIndex) {
+        correct++;
+        soundCorrect.currentTime = 0;
+        soundCorrect.play();
+      } else {
+        wrong++;
+        soundWrong.currentTime = 0;
+        soundWrong.play();
+        document.getElementById("correctAnswerText").textContent = correctText;
+        document.getElementById("errorPopup").classList.remove("hidden");
+      }
+      document.getElementById("correct").textContent = correct;
+      document.getElementById("wrong").textContent = wrong;
+      document.getElementById("nextButton").classList.remove("hidden");
+    }
+
+    function nextQuestion() {
+      current++;
+      showQuestion();
+    }
+
+    function showPopup() {
+      const total = correct + wrong;
+      const percent = total > 0 ? ((correct / total) * 100).toFixed(2) : 0;
+      document.getElementById("popupCorrect").textContent = correct;
+      document.getElementById("popupWrong").textContent = wrong;
+      document.getElementById("popupPercent").textContent = percent;
+      document.getElementById("popup").classList.remove("hidden");
+    }
+
+    function closePopup() {
+      document.getElementById("popup").classList.add("hidden");
+    }
+
+    function closeErrorPopup() {
+      document.getElementById("errorPopup").classList.add("hidden");
+    }
+  </script>
+</body>
+</html>
